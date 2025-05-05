@@ -50,3 +50,31 @@ def watch_gpu(config, gpu):
             else:
                 continue
     return gpu_info
+
+
+def watch_wallet(config):
+    url = 'https://www.autodl.com/api/v1/wallet'
+    headers = {
+        'User-Agent': UserAgent().random,
+        'Authorization': config.Authorization
+    }
+    response = requests.get(url = url, headers = headers).json()
+    wallet = {
+        'assets': float(response['data']['assets']) / 1000,
+        'used_assets': float(response['data']['accumulate']) / 1000,
+        'total_recharge_asset': float(response['data']['total_recharge_asset']) / 1000,
+    }
+    return wallet
+
+
+def watch_vip(config):
+    url = 'https://www.autodl.com/api/v1/user/member/detail'
+    headers = {
+        'User-Agent': UserAgent().random,
+        'Authorization': config.Authorization
+    }
+    response = requests.get(url = url, headers = headers).json()
+    if response['data']['level_acq_mode'] == 'vip_student':
+        return True
+    else:
+        return False
