@@ -3,7 +3,7 @@ import ast
 import requests
 from fake_useragent import UserAgent
 
-from .watch import watch_gpu
+from .watch import watch_gpu, watch_vip, watch_wallet
 
 
 region2name = {
@@ -22,7 +22,7 @@ region2name = {
 }
 
 
-def get_machine_id(config, gpu, region):
+def get_machine_info(config, gpu, region):
     url = 'https://www.autodl.com/api/v1/user/machine/list'
     headers = {
         'User-Agent': UserAgent().random,
@@ -37,11 +37,14 @@ def get_machine_id(config, gpu, region):
         'page_size': 10,
         'region_sign_list': ast.literal_eval(region),
     }
-    machine_id = []
+    machine_info = []
     response = requests.post(url = url, headers = headers, json = data).json()
     for v in response['data']['list']:
-        machine_id.append(v['machine_id'])
-    return machine_id
+        machine_info.append({
+            'machine_id': v['machine_id'],
+            'machine_price': v['payg_price']
+        })
+    return machine_info
 
 
 def use(config, gpu):
@@ -68,17 +71,23 @@ def use(config, gpu):
     gpu_info = watch_gpu(config, gpu)
     for region in gpu_info.keys():
         code = ''
-        machine_id = get_machine_id(config, gpu, region)
-        for id in machine_id:
-            data['instance_info']['machine_id'] = id
-            data['price_info']['machine_id'] = id
+        machine_info = get_machine_info(config, gpu, region)
+        for info in machine_info:
+            data['instance_info']['machine_id'] = info['machine_id']
+            data['price_info']['machine_id'] = info['machine_id']
             response = requests.post(url = url, headers = headers, json = data).json()
             if response['code'] == 'Success':
                 code = 'Success'
+                vip_code = watch_vip(config) # 判断是否是vip，vip需要打95折
+                machine_price = float(info['machine_price']) / 1000
+                machine_price = machine_price * 0.95 if vip_code else machine_price
+                wallet = watch_wallet(config)
                 print('购买成功')
                 print({
                     'gpu': gpu,
-                    'region': region2name[str(region)]
+                    'region': region2name[str(region)],
+                    'machine_price': f'{round(machine_price, 2)}/h',
+                    'used_time': f'{round(float(wallet["assets"]) / machine_price, 2)}h'
                 })
                 break
             else:
