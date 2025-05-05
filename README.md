@@ -2,20 +2,28 @@
 自动监控Autodl的闲置GPU，自动购买Autodl任意闲置GPU
 
 ## Usage
-1、监控
+1、首先进行登陆自动生成config.py文件，或者按照下面方法去找到Authorization自己编写config.py文件
+```python
+from autogpu import login
+
+login.login() # 不添加参数，使用wx二维码登陆
+login.login(phone = '填写手机号', password = '填写密码') # 使用手机号+密码登陆
+```
+
+2、监控
 ```python
 # watch
-from autogpu import gpu, watch
+from autogpu import watch
 import config
 
 gpu_info = watch.watch_gpu(config = config, gpu = 'RTX 4090')
 print(gpu_info)
 ```
 
-2、购买
+3、购买
 ```python
 # use
-from autogpu import gpu, watch
+from autogpu import gpu
 import config
 
 gpu.use(config = config, gpu = 'RTX 4090')
