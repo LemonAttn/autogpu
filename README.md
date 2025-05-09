@@ -26,7 +26,8 @@ print(gpu_info)
 from autogpu import gpu
 import config
 
-gpu.use(config = config, gpu = 'RTX 4090')
+# pytorch(2.5.1, 2.3.0, 2.1.2, 2.1.0, 2.0.0)
+gpu.use(config = config, gpu = 'RTX 3090', pytorch = '2.1.2')
 ```
 
 # config(Authorization)

@@ -20,6 +20,13 @@ region2name = {
     "['nm-A1']": 'A800专区',
     "['gd-A1']": '华为昇腾专区',
 }
+pytorch2image = {
+    '2.5.1': 'hub.kce.ksyun.com/autodl-image/torch:cuda12.4-cudnn-devel-ubuntu22.04-py312-torch2.5.1',
+    '2.3.0': 'hub.kce.ksyun.com/autodl-image/torch:cuda12.1-cudnn-devel-ubuntu22.04-py312-torch2.3.0',
+    '2.1.2': 'hub.kce.ksyun.com/autodl-image/torch:cuda11.8-cudnn8-devel-ubuntu22.04-py310-torch2.1.2',
+    '2.1.0': 'hub.kce.ksyun.com/autodl-image/torch:cuda12.1-cudnn8-devel-ubuntu22.04-py310-torch2.1.0',
+    '2.0.0': 'hub.kce.ksyun.com/autodl-image/torch:cuda11.8-cudnn8-devel-ubuntu20.04-py38-torch2.0.0',
+}
 
 
 def get_machine_info(config, gpu, region):
@@ -47,7 +54,9 @@ def get_machine_info(config, gpu, region):
     return machine_info
 
 
-def use(config, gpu):
+def use(config, gpu, pytorch = None):
+    if pytorch is None:
+        pytorch = '2.5.1'
     url = 'https://www.autodl.com/api/v1/order/instance/create/payg'
     headers = {
         'User-Agent': UserAgent().random,
@@ -57,7 +66,7 @@ def use(config, gpu):
         'instance_info': {
             'charge_type': 'payg',
             'expand_data_disk': 0,
-            'image': 'hub.kce.ksyun.com/autodl-image/torch:cuda12.4-cudnn-devel-ubuntu22.04-py312-torch2.5.1',
+            'image': pytorch2image[pytorch],
             'machine_id': '',
             'req_gpu_amount': 1
         },
