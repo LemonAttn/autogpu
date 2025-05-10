@@ -1,6 +1,12 @@
 # autogpu
 自动监控Autodl的闲置GPU，自动购买Autodl任意闲置GPU
 
+## Installer
+```shell
+python -m venv venv # 创建虚拟环境
+pip install -r requirements.txt # 下载需要的包
+```
+
 ## Usage
 1、首先进行登陆自动生成config.py文件，或者按照下面方法去找到Authorization自己编写config.py文件
 ```python

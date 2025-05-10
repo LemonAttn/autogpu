@@ -1,0 +1,4 @@
+fake_useragent==2.2.0
+matplotlib==3.8.2
+Pillow==11.2.1
+requests==2.32.3
